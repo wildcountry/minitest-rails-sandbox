@@ -1,0 +1,5 @@
+en:
+  errors:
+    messages:
+      cannot_contain_email: cannot contain an email address
+      cannot_contain_url: cannot contain a URL
