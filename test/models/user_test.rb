@@ -32,7 +32,10 @@ class UserTest < ActiveSupport::TestCase
     should allow_value(word).for(:email)
   end
 
-  ['123456', '@', '@gmail.com', 'fdjkfsd', 'dave@', 'one@abce'].each do |word|
+  invalid_emails = %w(123456 @ @gmail.com fdjkfsd dave@ one@abce) +
+                   ['space @example.com', 'two@ space.com']
+
+  invalid_emails.each do |word|
     should_not allow_value(word).for(:email)
   end
 
@@ -41,13 +44,12 @@ class UserTest < ActiveSupport::TestCase
 
   it 'should require confirmation to be set when creating a new record' do
     pass = '123new_password'
-    user = build_stubbed :user, password: pass, password_confirmation: 'blabla'
 
+    user = build_stubbed :user, password: pass, password_confirmation: 'blabla'
     user.wont_be :valid?
-    user.errors[:password_confirmation].join.must_equal "doesn't match Password"
+    user.errors[:password_confirmation].join.must_equal %(doesn't match Password)
 
     user = build_stubbed :user, password: pass, password_confirmation: pass
-
     user.must_be :valid?
   end
 
@@ -60,6 +62,16 @@ class UserTest < ActiveSupport::TestCase
     enc.must_be :present?
     enc.wont_equal pass
     enc.length.must_equal 60
+  end
+
+  it 'should strip leading/trailing spaces from email' do
+    emails = ['john@example.com ', '   jane.doe@wobble.co.uk', ' david@example.com ']
+
+    emails.each do |email|
+      user = build_stubbed :user, email: email
+      user.validate
+      user.email.must_equal email.strip
+    end
   end
 
   ## Destruction
