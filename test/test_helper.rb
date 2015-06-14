@@ -6,9 +6,9 @@ ActiveRecord::Migration.maintain_test_schema!
 
 Minitest::Reporters.use!(
   [
-    Minitest::Reporters::ProgressReporter.new,
+    # Minitest::Reporters::ProgressReporter.new,
     # Minitest::Reporters::DefaultReporter.new,
-    # Minitest::Reporters::SpecReporter.new
+    Minitest::Reporters::SpecReporter.new
   ],
   ENV,
   Minitest.backtrace_filter
@@ -30,6 +30,7 @@ class ActiveSupport::TestCase
 
   after do
     Timecop.return
+    ActionMailer::Base.deliveries.clear
   end
 end
 

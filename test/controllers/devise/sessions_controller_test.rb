@@ -43,7 +43,7 @@ module Devise
 
       describe 'with valid attributes' do
         before do
-          Timecop.freeze Time.now
+          Timecop.freeze Time.zone.now
           @user = create :user, password: 'Secret123'
 
           value do
@@ -69,9 +69,10 @@ module Devise
       end
 
       it 'should strip leading/trailing spaces from email' do
-        create :user, email:  'john@example.com', password: 'Abce1234'
+        pass = 'Abce1234'
+        create :user, email:  'john@example.com', password: pass
 
-        post :create, user: { email:  ' john@example.com  ', password: 'Abce1234' }
+        post :create, user: { email:  ' john@example.com  ', password: pass }
 
         @controller.current_user.must_be :present?
         session['warden.user.user.key'].must_be :present?
@@ -80,8 +81,7 @@ module Devise
       describe 'unconfirmed access' do
         before do
           @password =  'Secret456'
-          user = create :unconfirmed_user, password: @password
-          @email = user.email
+          @user = create :unconfirmed_user, password: @password
           sign_out :user
         end
 
@@ -94,7 +94,7 @@ module Devise
         end
 
         after do
-          post :create, user: { email: @email, password: @password }
+          post :create, user: { email: @user.email, password: @password }
           flash.now[:alert].must_equal 'You have to confirm your email address before continuing.'
           session['warden.user.user.key'].wont_be :present?
         end
@@ -105,6 +105,9 @@ module Devise
       it 'removes the user from the session' do
         user = create :user
         sign_in user
+
+        @controller.current_user.must_be :present?
+        session['warden.user.user.key'].must_be :present?
 
         post :destroy
 
