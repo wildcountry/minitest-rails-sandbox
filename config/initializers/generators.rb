@@ -7,7 +7,7 @@ Rails.application.config.generators do |g|
                    controller_specs: false,
                    request_specs: false
 
-  g.fixture_replacement :factory_girl, dir: 'test/factories'
+  g.factory_girl false
   g.stylesheets false
   g.javascripts false
 end

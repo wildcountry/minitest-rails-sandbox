@@ -14,13 +14,17 @@ Minitest::Reporters.use!(
   Minitest.backtrace_filter
 )
 
-Shoulda::Matchers.configure do |config|
-  config.integrate do |with|
+Shoulda::Matchers.configure do |c|
+  c.integrate do |with|
     with.test_framework :minitest
     with.library :rails
   end
 end
 
+# rubocop:disable Style/ClassAndModuleChildren
 class ActiveSupport::TestCase
-  # Add more helper methods to be used by all tests here...
+  include FactoryGirl::Syntax::Methods
+
+  infect_an_assertion :assert_difference, :must_change, :block
+  infect_an_assertion :assert_no_difference, :wont_change, :block
 end

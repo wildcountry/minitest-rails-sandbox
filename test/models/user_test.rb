@@ -1,23 +1,21 @@
 require 'test_helper'
-require 'shoulda-matchers'
 
 class UserTest < ActiveSupport::TestCase
-  # General Validations
+  ## General Validations
   %i(email password full_name).each do |field|
     should validate_presence_of field
   end
 
-  [:full_name].each do |field|
+  %i(full_name).each do |field|
     [
       'John', 'Smith:', 'Rick.Smith-Smthy', %('Singlequotes'),
-      'Frénchç', 'Âürman', 'Fẽr۩st', 'Arصbڸic', 'Hebהreךw',
-      '123456', '***', '^', %("doublequotes"), 'B%bby',
-      'J#n*s', 'Bobb☆y', 'Jo¶ns'
+      'Frénchç', 'Âürman', 'Fẽr۩st', 'Arصbڸic', 'Hebהreךw', 'Bobb☆y',
+      '123456', '***', '^', %("doublequotes"), 'B%bby', 'J#n*s', 'Jo¶ns'
     ].each do |word|
       should allow_value(word).for(field)
     end
 
-    %w(dave@some @me.com).each do |word|
+    %w(dave@some @me.com test@example.com).each do |word|
       should_not allow_value(word).for(field).
         with_message('cannot contain an email address')
     end
@@ -27,7 +25,7 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  # Email format validation
+  ## Email format validation
   %w(John@one.com Jane.Smith+20@gmail.com Rick.Smith-Smthy@yahoo.co.uk).each do |word|
     should allow_value(word).for(:email)
   end
@@ -36,53 +34,45 @@ class UserTest < ActiveSupport::TestCase
     should_not allow_value(word).for(:email)
   end
 
-  # Email uniqueness validation
-  describe 'unique user email' do
-    let(:subject) { User.new full_name: 'John Smith' }
-    should validate_uniqueness_of(:email).case_insensitive
-  end
-
-  # Password validation
+  ## Password validation
   should validate_length_of(:password).is_at_least(8).is_at_most(72)
 
   it 'should require confirmation to be set when creating a new record' do
     pass = '123new_password'
-    user = User.new password: pass,
-                    password_confirmation: 'blabla'
+    user = build_stubbed :user, password: pass, password_confirmation: 'blabla'
 
     user.wont_be :valid?
     user.errors[:password_confirmation].join.must_equal "doesn't match Password"
 
-    user = User.new full_name: 'John Smith',
-                    email: 'john@mailinator.com',
-                    password: pass,
-                    password_confirmation: pass
+    user = build_stubbed :user, password: pass, password_confirmation: pass
 
     user.must_be :valid?
   end
 
-  # Miscellaneous
-  it 'has a valid factory' # might be achieved with FactoryGirl.lint ?
-
+  ## Miscellaneous
   it "should encrypt user's password" do
-    user = User.new password: 'Secret765'
+    pass = 'Secret765'
+    user = User.new password: pass
+
     enc = user.encrypted_password
     enc.must_be :present?
-    enc.wont_equal 'Secret765'
+    enc.wont_equal pass
     enc.length.must_equal 60
   end
 
-  #
-  # class Destruction < ActiveSupport::TestCase
-  #   it 'can be destroyed' do
-  #     expect {
-  #       u = create(:user)
-  #       u.destroy
-  #
-  #       User.count.should == 0
-  #     }.to_not raise_error
-  #   end
-  #
-  #   it 'it destroys user dependencies'
-  # end
+  ## Destruction
+  it 'can be destroyed' do
+    u = create :user
+
+    expect { u.destroy }.must_change 'User.count', -1
+  end
+
+  it 'it destroys user dependencies'
+end
+
+class UserUniquenessTest < ActiveSupport::TestCase
+  ## User email uniqueness validation
+  let(:subject) { build :user }
+
+  should validate_uniqueness_of(:email).case_insensitive
 end

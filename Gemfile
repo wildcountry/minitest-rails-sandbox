@@ -27,6 +27,8 @@ group :test do
   gem 'database_cleaner'
   gem 'minitest-reporters'
   gem 'minitest-fail-fast'
+  gem 'factory_girl_rails'
+  gem 'ffaker'
   gem 'shoulda'
   gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'
 end
