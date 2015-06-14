@@ -78,7 +78,7 @@ class UserTest < ActiveSupport::TestCase
   it 'can be destroyed' do
     u = create :user
 
-    expect { u.destroy }.must_change 'User.count', -1
+    value { u.destroy }.must_change 'User.count', -1
   end
 
   it 'destroys user dependencies' # pending

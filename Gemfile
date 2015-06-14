@@ -29,6 +29,7 @@ group :test do
   gem 'minitest-fail-fast'
   gem 'factory_girl_rails'
   gem 'ffaker'
+  gem 'timecop'
   gem 'shoulda'
   gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'
 end
