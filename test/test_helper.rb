@@ -6,9 +6,9 @@ ActiveRecord::Migration.maintain_test_schema!
 
 Minitest::Reporters.use!(
   [
-    # Minitest::Reporters::ProgressReporter.new,
+    Minitest::Reporters::ProgressReporter.new,
     # Minitest::Reporters::DefaultReporter.new,
-    Minitest::Reporters::SpecReporter.new
+    # Minitest::Reporters::SpecReporter.new
   ],
   ENV,
   Minitest.backtrace_filter
@@ -28,20 +28,19 @@ class ActiveSupport::TestCase
   infect_an_assertion :assert_difference, :must_change, :block
   infect_an_assertion :assert_no_difference, :wont_change, :block
 
-  after do
+  teardown do
     Timecop.return
-    ActionMailer::Base.deliveries.clear
   end
 end
 
 class ActionController::TestCase
   include Devise::TestHelpers
-  include Rails.application.routes.url_helpers
 
   alias_method :must_redirect_to, :assert_redirected_to
   alias_method :must_render_template, :assert_template
 
   setup do
+    ActionMailer::Base.deliveries.clear
     @request.env['devise.mapping'] = Devise.mappings[:user]
   end
 end

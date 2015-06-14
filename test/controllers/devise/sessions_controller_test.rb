@@ -20,7 +20,10 @@ module Devise
       describe 'with invalid attributes' do
         before do
           @user = create :user, password: 'Secret123'
-          post :create, user: { email: @user.email, password: 'NotSecret456' }
+
+          value do
+            post :create, user: { email: @user.email, password: 'NotSecret456' }
+          end.wont_change '@user.reload.sign_in_count'
         end
 
         it 'does not set the current-user in the session' do
@@ -103,12 +106,7 @@ module Devise
 
     describe 'POST#destroy' do
       it 'removes the user from the session' do
-        user = create :user
-        sign_in user
-
-        @controller.current_user.must_be :present?
-        session['warden.user.user.key'].must_be :present?
-
+        sign_in create(:user)
         post :destroy
 
         @controller.current_user.must_be_nil

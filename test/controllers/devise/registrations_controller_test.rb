@@ -2,7 +2,7 @@ require 'test_helper'
 
 module Devise
   class RegistrationsControllerTest < ActionController::TestCase
-    let(:attrs) { attributes_for(:unconfirmed_user).except(:confirmed_at) }
+    let(:attrs) { attributes_for :unconfirmed_user }
 
     describe 'GET#new' do
       it 'renders the :new template' do
@@ -78,11 +78,13 @@ module Devise
         end
 
         it 'encrypts the password' do
-          u = assigns(:user)
-          expect(u.encrypted_password).wont_equal attrs[:password]
-          expect(u.encrypted_password.length).must_equal 60
-          expect(u.valid_password? attrs[:password]).must_equal true
-          expect(u.valid_password? u.encrypted_password).must_equal false
+          u = assigns :user
+
+          u.encrypted_password.wont_equal attrs[:password]
+          u.encrypted_password.length.must_equal 60
+
+          u.valid_password?(attrs[:password]).must_equal true
+          u.valid_password?(u.encrypted_password).must_equal false
         end
 
         it 'redirects to home-page' do
@@ -102,8 +104,9 @@ module Devise
         it 'sends a confirmation email' do
           deliveries = ActionMailer::Base.deliveries
           deliveries.length.must_equal 1
+
           email = deliveries.first
-          email.wont_be_nil
+          email.to.must_include attrs[:email]
           email.from.must_include 'minitest@example.com'
           email.subject.must_equal 'Confirmation instructions'
           email.body.to_s.must_match %r{href="http://www.example.com/users}

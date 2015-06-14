@@ -81,7 +81,7 @@ class UserTest < ActiveSupport::TestCase
     value { u.destroy }.must_change 'User.count', -1
   end
 
-  it 'destroys user dependencies' # pending
+  # it 'destroys user dependencies'
 end
 
 class UserUniquenessTest < ActiveSupport::TestCase
