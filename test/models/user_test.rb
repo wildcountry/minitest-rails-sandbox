@@ -6,6 +6,7 @@ class UserTest < ActiveSupport::TestCase
     should validate_presence_of field
   end
 
+  # %i(first_name last_name).each do |field|
   %i(full_name).each do |field|
     [
       'John', 'Smith:', 'Rick.Smith-Smthy', %('Singlequotes'),
@@ -26,7 +27,8 @@ class UserTest < ActiveSupport::TestCase
   end
 
   ## Email format validation
-  %w(John@one.com Jane.Smith+20@gmail.com Rick.Smith-Smthy@yahoo.co.uk).each do |word|
+  %w(John@one.com Jane.Smith+20@gmail.com Rick.Smith-Smthy@yahoo.co.uk
+     Fẽr۩st@Arصbڸic.com bob☆y.Âürman@fénchç.fr).each do |word|
     should allow_value(word).for(:email)
   end
 
@@ -67,7 +69,7 @@ class UserTest < ActiveSupport::TestCase
     expect { u.destroy }.must_change 'User.count', -1
   end
 
-  it 'it destroys user dependencies'
+  it 'destroys user dependencies' # pending
 end
 
 class UserUniquenessTest < ActiveSupport::TestCase
