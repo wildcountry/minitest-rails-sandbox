@@ -102,11 +102,11 @@ module Devise
         end
 
         it 'sends a confirmation email' do
-          deliveries = ActionMailer::Base.deliveries
-          deliveries.length.must_equal 1
-
-          email = deliveries.first
-          email.to.must_include attrs[:email]
+          mailbox_for(attrs[:email]).length.must_equal 1
+          email = open_last_email_for attrs[:email]
+          email.from.must_include 'minitest@example.com'
+          email.subject.must_equal 'Confirmation instructions'
+          email.body.to_s.must_match %r{href="http://www.example.com/users}
           email.from.must_include 'minitest@example.com'
           email.subject.must_equal 'Confirmation instructions'
           email.body.to_s.must_match %r{href="http://www.example.com/users}

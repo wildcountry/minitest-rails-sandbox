@@ -39,6 +39,7 @@ group :test do
   gem 'capybara'
   gem 'capybara_minitest_spec'
   gem 'launchy'
+  gem 'email_spec'
   gem 'shoulda'
   gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'
 end

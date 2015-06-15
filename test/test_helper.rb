@@ -30,6 +30,10 @@ module ActiveSupport
     infect_an_assertion :assert_difference, :must_change, :block
     infect_an_assertion :assert_no_difference, :wont_change, :block
 
+    setup do
+      ActionMailer::Base.deliveries.clear
+    end
+
     teardown do
       Timecop.return
     end
@@ -39,12 +43,13 @@ end
 module ActionController
   class TestCase
     include Devise::TestHelpers
+    include EmailSpec::Helpers
+    include EmailSpec::Matchers
 
     alias_method :must_redirect_to, :assert_redirected_to
     alias_method :must_render_template, :assert_template
 
     setup do
-      ActionMailer::Base.deliveries.clear
       @request.env['devise.mapping'] = Devise.mappings[:user]
     end
   end
@@ -53,6 +58,8 @@ end
 module ActionDispatch
   class IntegrationTest
     include Capybara::DSL
+    include EmailSpec::Helpers
+    include EmailSpec::Matchers
 
     class << self
       alias_method :context, :describe
@@ -69,6 +76,5 @@ module ActionDispatch
       Capybara.reset_sessions!
       Capybara.use_default_driver
     end
-
   end
 end
