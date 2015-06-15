@@ -9,7 +9,7 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
   log_in_button_text = 'Log in'
 
   feature 'User Registration' do
-    describe 'with invalid values' do
+    context 'with invalid values' do
       before do
         visit new_user_registration_path
       end
@@ -78,7 +78,7 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
     end
 
     [:rack_test, :poltergeist].each do |driver|
-      describe "with valid values (driver: #{driver})" do
+      context "with valid values (driver: #{driver})" do
         let :attrs do
           uniq = Time.zone.now.to_f
 
