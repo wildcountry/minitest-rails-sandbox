@@ -30,7 +30,6 @@ end
 group :test do
   gem 'minitest-spec-rails'
   gem 'guard-minitest'
-  gem 'database_cleaner'
   gem 'minitest-reporters'
   gem 'minitest-fail-fast'
   gem 'factory_girl_rails'
@@ -39,6 +38,7 @@ group :test do
   gem 'capybara'
   gem 'capybara_minitest_spec'
   gem 'launchy'
+  gem 'poltergeist'
   gem 'email_spec'
   gem 'shoulda'
   gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'

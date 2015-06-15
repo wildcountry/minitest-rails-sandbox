@@ -2,9 +2,14 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'capybara/rails'
+require 'capybara/poltergeist'
 
 ActiveRecord::Migration.maintain_test_schema!
 Capybara.default_driver = :rack_test
+
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, timeout: 60)
+end
 
 Minitest::Reporters.use!(
   [
@@ -78,3 +83,14 @@ module ActionDispatch
     end
   end
 end
+
+# rubocop:disable all
+class ActiveRecord::Base
+  mattr_accessor :shared_connection
+  @@shared_connection = nil
+
+  def self.connection
+    @@shared_connection || retrieve_connection
+  end
+end
+ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
