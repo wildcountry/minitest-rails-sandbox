@@ -13,12 +13,18 @@ gem 'jquery-rails'
 gem 'turbolinks', github: 'rails/turbolinks' # Use master branch, until v3+ is released
 
 gem 'devise'
+gem 'simple_form'
+gem 'slim'
 
 group :development, :test do
   gem 'byebug'
-  gem 'web-console', '~> 2.0'
   gem 'spring'
   gem 'guard'
+end
+
+group :development do
+  gem 'web-console', '~> 2.0'
+  gem 'slim-rails'
 end
 
 group :test do
@@ -30,6 +36,9 @@ group :test do
   gem 'factory_girl_rails'
   gem 'ffaker'
   gem 'timecop'
+  gem 'capybara'
+  gem 'capybara_minitest_spec'
+  gem 'launchy'
   gem 'shoulda'
   gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'
 end
