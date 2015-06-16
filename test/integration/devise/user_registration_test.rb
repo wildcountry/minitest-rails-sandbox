@@ -11,9 +11,9 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
 
   let :valid_attrs do
     {
-      email: "davy.jones@example.co.uk",
+      email: 'davy.jones@example.co.uk',
       password: 'abcdef123456',
-      full_name: "Davy's Nursery"
+      full_name: 'Davy Jones'
     }
   end
 
@@ -133,11 +133,9 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
           fill_in 'Email', with: valid_attrs[:email]
           fill_in 'Password', with: valid_attrs[:password]
 
-          _user = User.find_by email: valid_attrs[:email]
-
           expect do
             click_button log_in_button_text
-          end.must_change '_user.reload.sign_in_count', +1
+          end.must_change 'user.reload.sign_in_count', +1
 
           current_path.must_equal root_path
         end
