@@ -87,7 +87,7 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
       end
     end
 
-    def populate_form
+    def populate_and_submit_form
       visit new_user_registration_path
 
       fill_in 'Full name', with: valid_attrs[:full_name]
@@ -95,7 +95,7 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
       fill_in 'Password', with: valid_attrs[:password], match: :first
       fill_in 'Password confirmation', with: valid_attrs[:password]
 
-      expect { click_button register_button_text }.must_change 'User.count', +1
+      click_button register_button_text
     end
 
     def click_confirm_account_in_email
@@ -104,14 +104,14 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
 
       page.must_have_css success_css,
                          text: 'Your email address has been successfully confirmed.'
-
     end
 
     [:rack_test, :poltergeist].each do |driver|
       context "with valid values (driver: #{driver})" do
         scenario 'Register and log-in (valid)' do
           Capybara.current_driver = driver
-          populate_form
+
+          expect { populate_and_submit_form }.must_change 'User.count', +1
 
           page.must_have_css success_css, text: /A message with a confirmation link/
 
@@ -142,7 +142,7 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
 
         scenario 'Register and log-in (invalid password)' do
           Capybara.current_driver = driver
-          populate_form
+          populate_and_submit_form
           click_confirm_account_in_email
 
           user = User.last
