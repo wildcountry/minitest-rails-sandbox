@@ -37,7 +37,7 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
           page.must_have_css css
 
           within css do
-            page.must_have_css error_css, text: %(can't be blank)
+            page.must_have_css error_css, text: "can't be blank"
           end
         end
       end
@@ -58,7 +58,7 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
         click_button register_button_text
 
         errors = all "#{error_wrapper_css}.user_password_confirmation #{error_css}",
-                     text: "doesn't match Password"
+                     text: "doesn't match password"
 
         errors.length.must_equal 1
       end
@@ -101,9 +101,6 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
     def click_confirm_account_in_email
       email = open_last_email_for valid_attrs[:email]
       visit parse_email_for_anchor_text_link(email, 'Confirm my account')
-
-      page.must_have_css success_css,
-                         text: 'Your email address has been successfully confirmed.'
     end
 
     [:rack_test, :poltergeist].each do |driver|
@@ -123,6 +120,9 @@ class UserRegistrationTest < ActionDispatch::IntegrationTest
           email.body.to_s.must_match %r{href="http://www.example.com/users}
 
           click_confirm_account_in_email
+
+          page.must_have_css success_css,
+                             text: 'Your email address has been successfully confirmed.'
 
           User.count.must_equal 1
           user = User.last

@@ -47,7 +47,7 @@ class UserTest < ActiveSupport::TestCase
 
     user = build_stubbed :user, password: pass, password_confirmation: 'blabla'
     user.wont_be :valid?
-    user.errors[:password_confirmation].join.must_equal %(doesn't match Password)
+    user.errors[:password_confirmation].join.must_equal "doesn't match password"
 
     user = build_stubbed :user, password: pass, password_confirmation: pass
     user.must_be :valid?

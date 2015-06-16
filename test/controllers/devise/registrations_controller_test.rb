@@ -43,7 +43,7 @@ module Devise
 
         it 'assigns the user error message' do
           error = assigns(:user).errors.messages[:full_name].first
-          error.must_equal %(can't be blank)
+          error.must_equal "can't be blank"
         end
 
         it 'sends no confirmation email' do

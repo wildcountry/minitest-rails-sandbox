@@ -6,3 +6,11 @@ en:
 
   attributes:
     email: Email address
+
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            password_confirmation:
+              confirmation: doesn't match password
